@@ -9,8 +9,11 @@ int main(){
     NodeTree *raiz;
     raiz = create_tree(p1,p2);
 
-    int n=3, i;
+
+       
+    int n=6, i;
     Point p;
+
     for ( i = 0 ; i < n ; i++){
         printf("Cordenada x ");
         scanf ("%lf", &p.x);
@@ -18,6 +21,5 @@ int main(){
         scanf ("%lf", &p.y);
         add_tree(raiz,p);
     }
-
-    printList(raiz);    
+       
 }

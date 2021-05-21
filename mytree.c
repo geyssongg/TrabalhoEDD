@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "mytree.h"
 
-// Função que cria a raiz da arvore
+/*Função que cria a raiz da arvore*/
 NodeTree* create_tree(Point p1, Point p2){
     NodeTree *raizArvore = (NodeTree*) malloc(sizeof(NodeTree));
     HeadList *cabecaLista = (HeadList*) malloc(sizeof(HeadList));
@@ -17,7 +17,6 @@ NodeTree* create_tree(Point p1, Point p2){
 /*Função que recebe um nó e verifica se o ponto está dentro dos limites do retangulo
     Retorna 1 caso esteja dentro dos limites
     Retorna 0 caso não esteja dentro dos limites*/
-
 int verificaLimiteRetangulo (NodeTree *node, Point ponto){
     Point p1 = node->p1,p2 = node->p2;
     if ((ponto.x >= p1.x && ponto.x <= p2.x) && (ponto.y >= p1.y && ponto.y <= p2.y)){
@@ -68,7 +67,7 @@ void criaFilhoNO (NodeTree *node){
     node->NO->SE = NULL;
     node->NO->SO = NULL;}
 
-/* Função que cria o filho SO */
+/* Essa função cria o novo quadrante SO */
 void criaFilhoSO (NodeTree *node){
     //Alocação do filho SO
     node->SO = (NodeTree*) malloc (sizeof(NodeTree));
@@ -86,8 +85,8 @@ void criaFilhoSO (NodeTree *node){
     node->SO->SO = NULL;
 }
 
-/* Funcao que cria o filho SE */ 
 
+/* Essa função cria o novo quadrante SE */
 void criaFilhoSE (NodeTree *node){
     //Alocação do filho SE
     node->SE = (NodeTree*) malloc (sizeof(NodeTree));
@@ -106,13 +105,29 @@ void criaFilhoSE (NodeTree *node){
 }
 
 /* Função que quebra o nó alvo em quatro filhos*/
-void quebraNo (NodeTree *node){   
+void quebraNo (NodeTree *node){
+    //Colocando o tamanho da lista pra -1, que indica que o nó já foi quebrado
     node->lista->tamanho = -1; 
     criaFilhoNE(node);
     criaFilhoNO(node);
     criaFilhoSE(node);
     criaFilhoSO(node);
-} 
+}
+
+/* Essa função deleta a lista de pontos de um nó*/
+void deletaLista (NodeTree *node){
+    NodeList *temp;
+    NodeList *cur = node->lista->primeiro;
+
+    while(cur!=NULL){
+        temp = cur;
+        cur = cur->next;
+        free(temp);
+    }
+    node->lista->primeiro = NULL;
+   
+
+}
 
 /*Essa funcao retorna em um inteiro qual o quadrante que o ponto pertence 
     1 = pertence ao quadrante NE
@@ -208,12 +223,10 @@ void add_tree(NodeTree *node, Point p) {
                 add_tree(node->NO, p);
             break;
 
-
             //Caso 3: O ponto é direcionado para a arvore SO do nó atual
             case 3:
                 add_tree(node->SO,p);
             break;
-
             
             //Caso 4: O ponto é direcionado para a arvore SE do nó atual
             case 4:
@@ -228,6 +241,7 @@ void add_tree(NodeTree *node, Point p) {
         if(node->lista->tamanho == 4){
             quebraNo(node);
             distribuirPontos(node);
+            deletaLista(node);
             add_tree(node,p);
         }
         else{
@@ -236,6 +250,7 @@ void add_tree(NodeTree *node, Point p) {
     }
     
 }
+
 
 
 void printList(NodeTree *node){

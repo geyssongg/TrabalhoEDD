@@ -8,7 +8,7 @@ NodeTree* create_tree(Point p1, Point p2){
     HeadList *cabecaLista = (HeadList*) malloc(sizeof(HeadList));
     cabecaLista->tamanho = 0;
     cabecaLista->primeiro = NULL;
-    raizArvore->caminho = -1;
+    //raizArvore->caminho = -1;
     raizArvore->lista = cabecaLista;
     raizArvore->p1 = p1;
     raizArvore->p2 = p2;
@@ -66,7 +66,8 @@ void criaFilhoNO (NodeTree *node){
     node->NO->NE = NULL;
     node->NO->NO = NULL;
     node->NO->SE = NULL;
-    node->NO->SO = NULL;}
+    node->NO->SO = NULL;
+}
 
 /* Essa função cria o novo quadrante SO */
 void criaFilhoSO (NodeTree *node){
@@ -79,6 +80,8 @@ void criaFilhoSO (NodeTree *node){
     //Apontando a lista de pontos de NE para NULL
     node->SO->lista = (HeadList*) malloc(sizeof(HeadList));
     node->SO->lista->primeiro = NULL;
+     //Tamanho da lista agora é 0
+    node->NO->lista->tamanho = 0;
     //Apontando os filhos de NE para NULL
     node->SO->NE = NULL;
     node->SO->NO = NULL;
@@ -98,6 +101,8 @@ void criaFilhoSE (NodeTree *node){
     //Apontando a lista de pontos de NE para NULL
     node->SE->lista = (HeadList*) malloc(sizeof(HeadList));
     node->SE->lista->primeiro = NULL;
+     //Tamanho da lista agora é 0
+    node->SE->lista->tamanho = 0;
     //Apontando os filhos de NE para NULL
     node->SE->NE = NULL;
     node->SE->NO = NULL;
@@ -252,9 +257,10 @@ void add_tree(NodeTree *node, Point p) {
     
 }
 
-/*Essa função percorre a arvore quartenária*/ 
+//**Essa função percorre a arvore quartenária*/ /*
+/*
 void percorrerArvore(NodeTree *node){
-    if(node->NE != NULL){
+    if(node->lista->tamanho == -1){
         percorrerArvore(node->NE);
         percorrerArvore(node->NO);
         percorrerArvore(node->SO);
@@ -262,14 +268,62 @@ void percorrerArvore(NodeTree *node){
     }
     else {
         //Aqui vai o código de percorrer a lista
-        return;
+        //printList(node);
+    }
+}*/
+
+//Essa função percorre toda a arvore de forma recursiva e coloca todos os elementos em uma única lista encadeada
+void preencheListaArvore(NodeTree *node, HeadList *head){
+    if(node->lista->tamanho == -1){
+        preencheListaArvore(node->NE,head);
+        preencheListaArvore(node->NO,head);
+        preencheListaArvore(node->SO,head);
+        preencheListaArvore(node->SE,head);
+    }
+    else{
+        NodeList *aux;
+        if(node->lista->primeiro == NULL){
+            return;
+        }
+        else{
+            for(aux = node->lista->primeiro ; aux != NULL ; aux = aux->next){
+                NodeList *new = (NodeList*) malloc(sizeof(NodeList));
+                new->p = aux->p;
+                new->next = head->primeiro;
+                head->primeiro = new;
+            }
+            return;
+        }
     }
 }
 
-void find_point(NodeTree *node, Point p){
+//Função auxiliar a função find_point (cria uma lista com todos os pontos da arvore)
+void find_point_aux (NodeTree *node,Point p){
+    HeadList *lista;
+    lista = (HeadList*) malloc(sizeof(HeadList));
+    lista->primeiro = NULL;
+    lista->tamanho = 0;
+    //Chama a função que preenche a lista
+    preencheListaArvore(node,lista);
     
+    NodeList *aux ;
+    int achou = 0;
+    for(aux = lista->primeiro ; aux != NULL ; aux = aux->next){
+        if(aux->p.x == p.x && aux->p.y == p.y){
+            printf("(%.2lf , %.2lf): Caminho\n", p.x, p.y);
+            return;
+        }
+        achou = -1;
+    }
+    if (achou = -1){
+        printf("(%.2lf , %.2lf): -1", p.x, p.y);
+    }
+
 }
 
+void find_point(NodeTree *node, Point p){
+    find_point_aux(node,p);
+}
 
 void printList(NodeTree *node){
     NodeList *aux;

@@ -16,14 +16,14 @@ int main(){
     scanf("%i", &p2.y);*/
     p1.x = 0;
     p1.y = 0;
-    p2.x = 10;
-    p2.y = 10;
+    p2.x = 100;
+    p2.y = 100;
     NodeTree *raiz;
     raiz = create_tree(p1,p2);
 
 
        
-    int n=8, i;
+    int n=7, i;
     Point p;
 
     for ( i = 0 ; i < n ; i++){
@@ -37,20 +37,11 @@ int main(){
         add_tree(raiz,p);
     }
 
-    /*percorrerArvore(raiz);*/
+    p.x = 3;
+    p.y = 51;
+    find_point(raiz,p);
+    p.x=87;
+    p.y=99;
+    find_point(raiz,p);
     
-    find_point(root, p);
-    
-
-    /*printf("\nPontos da raiz: ");
-    printList(raiz);
-    printf("\nPontos do no NE: ");
-    printList(raiz->NE);
-    printf("\nPontos do no NO: ");
-    printList(raiz->NO);
-    printf("\nPontos do no SO: ");
-    printList(raiz->SO);
-    printf("\nPontos do no SE: ");
-    printList(raiz->SE);*/
-
 }

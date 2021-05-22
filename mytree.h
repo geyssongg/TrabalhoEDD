@@ -34,7 +34,6 @@ typedef struct NodeList {
 typedef struct NodeTree {
 	HeadList *lista;
 	int filhos;
-	char caminho[2];
 	Point p1;
 	Point p2;
     struct NodeTree *SE;

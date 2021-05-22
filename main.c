@@ -36,7 +36,7 @@ int main(){
         scanf ("%lf", &p.y);
         add_tree(raiz,p);
     }
-
+    
     p.x = 3;
     p.y = 51;
     find_point(raiz,p);
@@ -44,4 +44,8 @@ int main(){
     p.y=99;
     find_point(raiz,p);
     
+    printf("\n--\n");
+    p.x = 50;
+    p.y = 50;
+    find_points_in_circle(raiz,p,30);
 }

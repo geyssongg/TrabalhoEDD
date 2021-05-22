@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "mytree.h"
 
 /*Função que cria a raiz da arvore*/
@@ -120,7 +121,7 @@ void quebraNo (NodeTree *node){
     criaFilhoSO(node);
 }
 
-/* Essa função deleta a lista de pontos de um nó*/
+/* Essa função deleta uma lista recebendo como parametro um nó*/
 void deletaLista (NodeTree *node){
     NodeList *temp;
     NodeList *cur = node->lista->primeiro;
@@ -131,10 +132,19 @@ void deletaLista (NodeTree *node){
         free(temp);
     }
     node->lista->primeiro = NULL;
-   
-
 }
 
+/* Essa função deleta uma lista encadeada recebendo uma cabeça de lista como parametro*/
+void delList (HeadList *cabeca){
+    NodeList *temp;
+    NodeList *cur = cabeca->primeiro;
+
+    while(cur!=NULL){
+        temp = cur;
+        cur = cur->next;
+        free(temp);
+    }
+}
 /*Essa funcao retorna em um inteiro qual o quadrante que o ponto pertence 
     1 = pertence ao quadrante NE
     2 = pertence ao quadrante NO
@@ -305,7 +315,6 @@ void find_point_aux (NodeTree *node,Point p){
     lista->tamanho = 0;
     //Chama a função que preenche a lista
     preencheListaArvore(node,lista);
-    
     NodeList *aux ;
     int achou = 0;
     for(aux = lista->primeiro ; aux != NULL ; aux = aux->next){
@@ -319,11 +328,41 @@ void find_point_aux (NodeTree *node,Point p){
         printf("(%.2lf , %.2lf): -1", p.x, p.y);
     }
 
+    deletaLista(lista);
 }
-
+//Função que procura um ponto na arvore
 void find_point(NodeTree *node, Point p){
     find_point_aux(node,p);
 }
+
+double distance(Point p1, Point p2) {
+	int c1 = (p2.x - p1.x) * (p2.x - p1.x);
+	int c2 = (p2.y - p1.y) * (p2.y - p1.y);
+
+	return sqrt(c1 + c2);
+}
+
+/* Função auxiliar a função find_points_in_circle*/
+void find_points_in_circle_aux(NodeTree *node,Point p, int r){
+    HeadList *lista;
+    lista = (HeadList*) malloc(sizeof(HeadList));
+    lista->primeiro = NULL;
+    lista->tamanho = 0;
+    //Chama a função que preenche a lista
+    preencheListaArvore(node,lista);
+    NodeList *aux;
+    for (aux = lista->primeiro; aux != NULL ; aux = aux->next){
+        if(distance(p,aux->p) <= r){
+            printf("(%.2lf,  %.2lf): %.2lf\n", p.x,p.y,distance(p,aux->p));
+        }
+    }
+}
+
+
+/*Função que procura pontos dentro do raio*/
+void find_points_in_circle(NodeTree *node,Point p, int r){
+    find_points_in_circle_aux(node, p, r);
+} 
 
 void printList(NodeTree *node){
     NodeList *aux;

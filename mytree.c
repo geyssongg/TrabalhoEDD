@@ -237,7 +237,7 @@ void add_tree(NodeTree *node, Point p) {
                 break;
         }
     }
-    else if (node->lista->tamanho >= 0 && node->lista->tamanho <= 4){
+    else if (node->lista->tamanho >= 0 && node->lista->tamanho < 5){
         if(node->lista->tamanho == 4){
             quebraNo(node);
             distribuirPontos(node);

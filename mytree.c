@@ -1,19 +1,26 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <math.h>
 #include "mytree.h"
 
 /*Função que cria a raiz da arvore*/
 NodeTree* create_tree(Point p1, Point p2){
-    NodeTree *raizArvore = (NodeTree*) malloc(sizeof(NodeTree));
-    HeadList *cabecaLista = (HeadList*) malloc(sizeof(HeadList));
-    cabecaLista->tamanho = 0;
-    cabecaLista->primeiro = NULL;
+    NodeTree* node = malloc(sizeof(NodeTree));
+    NodeList* list =  malloc(sizeof(NodeList));
+    list->headList = malloc(sizeof(HeadList));
+    strcpy(node->caminho,"0");
+    list->headList->tamanho = 0;
+    list->headList->primeiro = NULL;
     //raizArvore->caminho = -1;
-    raizArvore->lista = cabecaLista;
-    raizArvore->p1 = p1;
-    raizArvore->p2 = p2;
-    return raizArvore;
+    node->lista = list;
+    node->p1 = p1;
+    node->p2 = p2;
+    node->NE = NULL;
+    node->NO = NULL;
+    node->SO = NULL;
+    node->SE = NULL;
+    return node;
 }
 
 /*Função que recebe um nó e verifica se o ponto está dentro dos limites do retangulo
@@ -30,108 +37,139 @@ int verificaLimiteRetangulo (NodeTree *node, Point ponto){
 
 /* Essa função cria o novo quadrante NE */
 void criaFilhoNE (NodeTree *node){
+
     //Alocação do filho NE
     node->NE = (NodeTree*) malloc(sizeof(NodeTree));
+
     //Escrevendo coordenadas de divisão do bloco NE
-    node->NE->p1.x = (node->p2.x + node->p1.x)/2;
-    node->NE->p1.y = (node->p2.y + node->p1.y)/2;
-    node->NE->p2.x = (node->p2.x);
-    node->NE->p2.y = (node->p2.y);
-    //Apontando a lista de pontos de NE para NULL
-    node->NE->lista = (HeadList*) malloc(sizeof(HeadList));
-    node->NE->lista->primeiro = NULL;
-    //Tamanho da lista é 0
-    node->NE->lista->tamanho = 0;
-    //Apontando os filhos de NE para NULL
-    node->NE->NE = NULL;
-    node->NE->NO = NULL;
-    node->NE->SE = NULL;
-    node->NE->SO = NULL;
+    Point p1 = {.x = (node->p2.x + node->p1.x)/2, .y = (node->p2.y + node->p1.y)/2};
+    Point p2 = {.x = (node->p2.x), .y = node->p2.y};
+    
+    // Criação NE
+    NodeTree* nodeNE = create_tree(p1, p2);
+
+    // Apontamento do filho do no atual no lado NE
+    node->NE = nodeNE;
+
+    //Pegando o caminho do elemento pai e adicionando ao elemento filho
+    char aux[20];
+
+    if(strcmp(node->caminho, "0") != 0){
+        strcpy(aux,node->caminho);
+    }
+    strcat(aux,"00");
+    strcpy(node->NE->caminho, aux);
+
+
 }
 
 /* Essa função cria o novo quadrante NO */
 void criaFilhoNO (NodeTree *node){
+
     //Alocação do filho NO
-    node->NO = (NodeTree*) malloc(sizeof(NodeTree));
+    node->NO = malloc(sizeof(NodeTree));
+
     //Escrevendo coordenadas de divisão do bloco NO
-    node->NO->p1.x = node->p1.x;
-    node->NO->p1.y = (node->p2.y + node->p1.y)/2;
-    node->NO->p2.x = (node->p2.x + node->p1.x)/2;
-    node->NO->p2.y = (node->p2.y);
-    //Apontando a lista de pontos de NE para NULL
-    node->NO->lista = (HeadList*) malloc(sizeof(HeadList));
-    node->NO->lista->primeiro = NULL;
-    //Tamanho da lista agora é 0
-    node->NO->lista->tamanho = 0;
-    //Apontando os filhos de NE para NULL
-    node->NO->NE = NULL;
-    node->NO->NO = NULL;
-    node->NO->SE = NULL;
-    node->NO->SO = NULL;
+    Point p1 = {.x = node->p1.x, .y = (node->p2.y + node->p1.y)/2};
+    Point p2 = {.x = (node->p2.x + node->p1.x)/2 , .y = (node->p2.y)};
+
+    //Criação NO
+    NodeTree* nodeNO = create_tree(p1, p2);
+
+    //Apontamento do filho do nó atual no lado NO
+    node->NO = nodeNO;
+
+   //Pegando o caminho do elemento pai e adicionando ao elemento filho
+    char aux[20];
+    if(strcmp(node->caminho, "0") != 0){
+        strcpy(aux,node->caminho);
+    }
+    strcat(aux,"01");
+    strcpy(node->NO->caminho, aux);
+
+
+
+
 }
 
 /* Essa função cria o novo quadrante SO */
 void criaFilhoSO (NodeTree *node){
+
     //Alocação do filho SO
-    node->SO = (NodeTree*) malloc (sizeof(NodeTree));
-    node->SO->p1.x = node->p1.x;
-    node->SO->p1.y = node->p1.y;
-    node->SO->p2.x = (node->p2.x + node->p1.x) / 2;
-    node->SO->p2.y = (node->p2.y + node->p1.y) / 2;
-    //Apontando a lista de pontos de NE para NULL
-    node->SO->lista = (HeadList*) malloc(sizeof(HeadList));
-    node->SO->lista->primeiro = NULL;
-     //Tamanho da lista agora é 0
-    node->NO->lista->tamanho = 0;
-    //Apontando os filhos de NE para NULL
-    node->SO->NE = NULL;
-    node->SO->NO = NULL;
-    node->SO->SE = NULL;
-    node->SO->SO = NULL;
+    node->SO = malloc (sizeof(NodeTree));
+
+    //Escrevendo coordenadas de divisão do bloco SO
+    Point p1 = {.x = (node->p1.x), .y = (node->p1.y)};
+    Point p2 = {.x = (node->p2.x + node->p1.x) /2, .y = (node->p2.y + node->p1.y) /2};
+
+    //Criação nó SO
+    NodeTree* nodeSO = create_tree(p1, p2);
+
+    //Apontamento do filho do nó atual no lado SO
+    node->SO = nodeSO;
+
+    //Pegando o caminho do elemento pai e adicionando ao elemento filho
+    char aux[20];
+    if(strcmp(node->caminho, "0") != 0){
+        strcpy(aux,node->caminho);
+    }
+    strcat(aux,"10");
+    strcpy(node->SO->caminho, aux);
+
+
 }
 
 
 /* Essa função cria o novo quadrante SE */
 void criaFilhoSE (NodeTree *node){
+
     //Alocação do filho SE
-    node->SE = (NodeTree*) malloc (sizeof(NodeTree));
-    node->SE->p1.x = (node->p2.x + node->p1.x) / 2;
-    node->SE->p1.y = node->p1.y;
-    node->SE->p2.x = node->p2.x;
-    node->SE->p2.y = (node->p2.y + node->p1.y) / 2;
-    //Apontando a lista de pontos de NE para NULL
-    node->SE->lista = (HeadList*) malloc(sizeof(HeadList));
-    node->SE->lista->primeiro = NULL;
-     //Tamanho da lista agora é 0
-    node->SE->lista->tamanho = 0;
-    //Apontando os filhos de NE para NULL
-    node->SE->NE = NULL;
-    node->SE->NO = NULL;
-    node->SE->SE = NULL;
-    node->SE->SO = NULL;
+    node->SE =  malloc (sizeof(NodeTree));
+
+    //Escrevendo coordenadas de divisão do bloco SE
+    Point p1 = {.x =  (node->p2.x + node->p1.x) / 2, .y=node->p1.y};
+    Point p2 = {.x = node->p2.x, .y = (node->p2.y + node->p1.y) / 2};
+
+    //Criação Nó SE
+    NodeTree* nodeSE = create_tree(p1, p2);
+
+
+    //Apontamento do filho do nó atual no lado SE
+    node->SE = nodeSE;
+
+    //Pegando o caminho do elemento pai e adicionando ao elemento filho
+    char aux[20];
+    if(strcmp(node->caminho, "0") != 0){
+        strcpy(aux,node->caminho);
+    }
+    strcat(aux,"11");
+    strcpy(node->SE->caminho, aux);
+
 }
 
 /* Função que quebra o nó alvo em quatro filhos*/
 void quebraNo (NodeTree *node){
     //Colocando o tamanho da lista pra -1, que indica que o nó já foi quebrado
-    node->lista->tamanho = -1; 
+
+    node->lista->headList->tamanho = -1; 
     criaFilhoNE(node);
     criaFilhoNO(node);
     criaFilhoSE(node);
     criaFilhoSO(node);
+
 }
 
 /* Essa função deleta uma lista recebendo como parametro um nó*/
-void deletaLista (NodeTree *node){
+void delete_list (NodeList *list){
     NodeList *temp;
-    NodeList *cur = node->lista->primeiro;
+    NodeList *cur = list->headList->primeiro;
 
     while(cur!=NULL){
         temp = cur;
         cur = cur->next;
         free(temp);
     }
-    node->lista->primeiro = NULL;
+    list->headList->primeiro = NULL;
 }
 
 /* Essa função deleta uma lista encadeada recebendo uma cabeça de lista como parametro*/
@@ -151,42 +189,44 @@ void delList (HeadList *cabeca){
     3 = pertence ao quadrante SO
     4 = pertence ao quadrante SE */
 int retornaQuadrante(NodeTree *node, Point p){
+    int codigo_quadrante;
+    if (verificaLimiteRetangulo(node->SE,p)){
+        codigo_quadrante = 4;
+    }
+    if (verificaLimiteRetangulo(node->SO,p)){
+        codigo_quadrante = 3;
+    }
+    if (verificaLimiteRetangulo(node->NO,p)){
+        codigo_quadrante = 2;
+    }
     if (verificaLimiteRetangulo(node->NE,p)){
-        return 1;
+        codigo_quadrante = 1;
     }
-    else if (verificaLimiteRetangulo(node->NO,p)){
-        return 2;
-    }
-    else if (verificaLimiteRetangulo(node->SO,p)){
-        return 3;
-    }
-    else if (verificaLimiteRetangulo(node->SE,p)){
-        return 4;
-    }
+    return codigo_quadrante;
 }
 
 /* Função que adiciona um ponto a uma lista*/
 void adicionaPontoLista (NodeTree *node, Point ponto){
     //Verificando se o primeiro nó é nulo;
-    if (node->lista->primeiro == NULL){
+    if (node->lista->headList->primeiro == NULL){
         NodeList *new = (NodeList*) malloc (sizeof(NodeList));
         new->p = ponto;
         new->next = NULL;
-        node->lista->primeiro = new;
-        node->lista->tamanho = node->lista->tamanho + 1;
+        node->lista->headList->primeiro = new;
+        node->lista->headList->tamanho +=  1;
         return;
     }
     //Caso não for, percorre a lista
     else{
         NodeList *aux;
-        for(aux = node->lista->primeiro ; aux != NULL; aux = aux->next){
+        for(aux = node->lista->headList->primeiro ; aux != NULL; aux = aux->next){
             //Se esse if for valido, foi encontrado o ultimo nó
             if(aux->next == NULL){
                 NodeList *new = (NodeList*) malloc (sizeof(NodeList));
                 new->p = ponto;
                 new->next = NULL;
                 aux->next = new;
-                node->lista->tamanho = node->lista->tamanho + 1;
+                node->lista->headList->tamanho += 1;
                 return;
             }
         }
@@ -196,7 +236,7 @@ void adicionaPontoLista (NodeTree *node, Point ponto){
 void distribuirPontos(NodeTree *node){
     NodeList *aux;
     int escolhaNo;
-    for (aux = node->lista->primeiro; aux != NULL ; aux = aux->next){
+    for (aux = node->lista->headList->primeiro; aux != NULL ; aux = aux->next){
         escolhaNo = retornaQuadrante(node,aux->p);
         switch (escolhaNo){
             //Caso 1: o ponto é direcionado para a lista do nó NE
@@ -224,10 +264,12 @@ void distribuirPontos(NodeTree *node){
 /*Função que adiciona pontos nas listas do nó, caso chegue ao máximo de pontos chama a função
 Que quebra o quadrante alvo em 4 quadrantes filhos e separa os elementos da lista em */
 void add_tree(NodeTree *node, Point p) {
+ 
     //Caso entre no primeiro if o nó já foi quebrado, chamando a função retornaQuadrante
     //Para saber qual o nó destino do ponto e chama função add_tree novamente
-    if(node->lista->tamanho == -1){
-        int escolhaNo = retornaQuadrante(node,p);
+    if(node->lista->headList->tamanho == -1){
+
+        int escolhaNo = retornaQuadrante(node,p);    
         switch (escolhaNo){
             //Caso 1: O ponto é direcionado para a arvore NE do nó atual
             case 1:
@@ -253,11 +295,12 @@ void add_tree(NodeTree *node, Point p) {
                 break;
         }
     }
-    else if (node->lista->tamanho >= 0 && node->lista->tamanho < 5){
-        if(node->lista->tamanho == 4){
+    else if (node->lista->headList->tamanho >= 0 && node->lista->headList->tamanho < 5){
+
+        if(node->lista->headList->tamanho == 4){
             quebraNo(node);
             distribuirPontos(node);
-            deletaLista(node);
+            delete_list(node->lista);
             add_tree(node,p);
         }
         else{
@@ -283,57 +326,57 @@ void percorrerArvore(NodeTree *node){
 }*/
 
 //Essa função percorre toda a arvore de forma recursiva e coloca todos os elementos em uma única lista encadeada
-void preencheListaArvore(NodeTree *node, HeadList *head){
-    if(node->lista->tamanho == -1){
-        preencheListaArvore(node->NE,head);
-        preencheListaArvore(node->NO,head);
-        preencheListaArvore(node->SO,head);
-        preencheListaArvore(node->SE,head);
+void preencheListaArvore(NodeTree *node, NodeList *list){
+    if(node->lista->headList->tamanho == -1){
+        preencheListaArvore(node->NE,list);
+        preencheListaArvore(node->NO,list);
+        preencheListaArvore(node->SO,list);
+        preencheListaArvore(node->SE,list);
     }
     else{
         NodeList *aux;
-        if(node->lista->primeiro == NULL){
+        if(node->lista->headList->primeiro == NULL){
             return;
         }
         else{
-            for(aux = node->lista->primeiro ; aux != NULL ; aux = aux->next){
-                NodeList *new = (NodeList*) malloc(sizeof(NodeList));
+            for(aux = node->lista->headList->primeiro ; aux != NULL ; aux = aux->next){
+                NodeList *new = malloc(sizeof(NodeList));
                 new->p = aux->p;
-                new->next = head->primeiro;
-                head->primeiro = new;
+                new->next = list->headList->primeiro;
+                list->headList->primeiro = new;
+                strcpy(new->caminho,node->caminho);
             }
             return;
         }
     }
 }
 
-//Função auxiliar a função find_point (cria uma lista com todos os pontos da arvore)
-void find_point_aux (NodeTree *node,Point p){
-    HeadList *lista;
-    lista = (HeadList*) malloc(sizeof(HeadList));
-    lista->primeiro = NULL;
-    lista->tamanho = 0;
+//Função que procura um ponto na arvore
+void find_point(NodeTree *node, Point p){
+
+    NodeList* lista =  malloc(sizeof(NodeList));
+    lista->headList = malloc(sizeof(HeadList));
+    lista->headList->primeiro = NULL;
+    lista->headList->tamanho = 0;
     //Chama a função que preenche a lista
     preencheListaArvore(node,lista);
     NodeList *aux ;
     int achou = 0;
-    for(aux = lista->primeiro ; aux != NULL ; aux = aux->next){
+    for(aux = lista->headList->primeiro ; aux != NULL ; aux = aux->next){
         if(aux->p.x == p.x && aux->p.y == p.y){
-            printf("(%.2lf , %.2lf): Caminho\n", p.x, p.y);
+            printf("(%.2lf , %.2lf):  %s\n", p.x, p.y, aux->caminho);
             return;
         }
         achou = -1;
     }
     if (achou = -1){
-        printf("(%.2lf , %.2lf): -1", p.x, p.y);
+        printf("(%.2lf , %.2lf): -1\n", p.x, p.y);
     }
 
-    deletaLista(lista);
+    delete_list(lista);
 }
-//Função que procura um ponto na arvore
-void find_point(NodeTree *node, Point p){
-    find_point_aux(node,p);
-}
+
+
 
 double distance(Point p1, Point p2) {
 	int c1 = (p2.x - p1.x) * (p2.x - p1.x);
@@ -342,34 +385,31 @@ double distance(Point p1, Point p2) {
 	return sqrt(c1 + c2);
 }
 
-/* Função auxiliar a função find_points_in_circle*/
-void find_points_in_circle_aux(NodeTree *node,Point p, int r){
-    HeadList *lista;
-    lista = (HeadList*) malloc(sizeof(HeadList));
-    lista->primeiro = NULL;
-    lista->tamanho = 0;
+
+/*Função que procura pontos dentro do raio*/
+void find_points_in_circle(NodeTree *node,Point p, double r){
+
+    NodeList *lista;
+    lista =  malloc(sizeof(NodeList));
+    lista->headList = malloc(sizeof(HeadList));
+    lista->headList->primeiro = NULL;
+    lista->headList->tamanho = 0;
     //Chama a função que preenche a lista
     preencheListaArvore(node,lista);
     NodeList *aux;
-    for (aux = lista->primeiro; aux != NULL ; aux = aux->next){
+    for (aux = lista->headList->primeiro; aux != NULL ; aux = aux->next){
         if(distance(p,aux->p) <= r){
-            printf("(%.2lf,  %.2lf): %.2lf\n", p.x,p.y,distance(p,aux->p));
+            printf("(%.2lf,  %.2lf): %.2lf\n", aux->p.x,aux->p.y,distance(p,aux->p));
         }
     }
-}
-
-
-/*Função que procura pontos dentro do raio*/
-void find_points_in_circle(NodeTree *node,Point p, int r){
-    find_points_in_circle_aux(node, p, r);
 } 
 
-void printList(NodeTree *node){
+void print_list(NodeTree *node){
     NodeList *aux;
 
     //Percorrendo a lista
     
-    for (aux = node->lista->primeiro; aux != NULL; aux = aux->next){
+    for (aux = node->lista->headList->primeiro; aux != NULL; aux = aux->next){
         
 		printf("%.2lf    %.2lf \n", aux->p.x, aux->p.y);
     }

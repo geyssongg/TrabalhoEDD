@@ -1,7 +1,7 @@
 #ifndef __MYTREE_H_
 #define __MYTREE_H_
 
-
+#include <math.h>
 
 #define MAXPOINTS 4
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -26,13 +26,14 @@ typedef struct headList {
 
 typedef struct NodeList {
 	Point p;
-
+	HeadList *headList;
 	struct NodeList *next;
+	char caminho[20];
 	//TODO
 } NodeList;
 
 typedef struct NodeTree {
-	HeadList *lista;
+	NodeList *lista;
 	int filhos;
 	Point p1;
 	Point p2;
@@ -40,10 +41,16 @@ typedef struct NodeTree {
     struct NodeTree *NE;
     struct NodeTree *SO;
     struct NodeTree *NO;
+	char caminho[20];
 	//TODO
 } NodeTree;
 
-/*double distance(Point p1, Point p2);
+double distance(Point p1, Point p2);
 NodeTree *create_tree(Point p1, Point p2);
-*/
+void delete_list(NodeList *node);
+void delete_tree(NodeTree *node);
+void add_tree(NodeTree *node, Point p);
+void find_point(NodeTree *node, Point p);
+void print_tree(NodeTree *root);
+void find_points_in_circle(NodeTree *node, Point p, double r);
 #endif

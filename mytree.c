@@ -8,6 +8,7 @@ NodeTree* create_tree(Point p1, Point p2){
     HeadList *cabecaLista = (HeadList*) malloc(sizeof(HeadList));
     cabecaLista->tamanho = 0;
     cabecaLista->primeiro = NULL;
+    raizArvore->caminho = -1;
     raizArvore->lista = cabecaLista;
     raizArvore->p1 = p1;
     raizArvore->p2 = p2;
@@ -251,6 +252,23 @@ void add_tree(NodeTree *node, Point p) {
     
 }
 
+/*Essa função percorre a arvore quartenária*/ 
+void percorrerArvore(NodeTree *node){
+    if(node->NE != NULL){
+        percorrerArvore(node->NE);
+        percorrerArvore(node->NO);
+        percorrerArvore(node->SO);
+        percorrerArvore(node->SE);
+    }
+    else {
+        //Aqui vai o código de percorrer a lista
+        return;
+    }
+}
+
+void find_point(NodeTree *node, Point p){
+    
+}
 
 
 void printList(NodeTree *node){

@@ -9,7 +9,7 @@ NodeTree* create_tree(Point p1, Point p2){
     NodeTree* node = malloc(sizeof(NodeTree));
     NodeList* list =  malloc(sizeof(NodeList));
     list->headList = malloc(sizeof(HeadList));
-    strcpy(node->caminho,"0");
+    strcpy(node->caminho,"");
     list->headList->tamanho = 0;
     list->headList->primeiro = NULL;
     //raizArvore->caminho = -1;

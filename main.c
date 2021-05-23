@@ -2,8 +2,10 @@
  * Trabalho Prático 1 -- Estruturas de Dados 2020/1
  * Grupo:
  *	Caio Viegas de Souza Gomide -- RGA: 201911901004
- *	Sicrano -- RGA: 20...
- *	Beltrano -- RGA: ...
+ *	Geysson Guilherme Veiga viana -- RGA: 201921901004
+ *	Julia Pinheiro Ribeiro -- RGA: 201621901019
+ *  Kayo Leone Dias Perim -- RGA: 201911901019
+
  * 
  */
 
@@ -70,8 +72,12 @@ int main(int argc, char **argv) {
 	}
 	printf("--\n");
 	// /* Função que imprime todos os pontos da árvore */
-	// print_tree(root);
-
+	print_tree(root);/*
+	print_list(root->NE);
+	print_list(root->NO);
+	print_list(root->SO);
+	print_list(root->SE);*/
+	//printf("Cam NE %s    Cam NO %s     Cam SO %s  Cam Se %s", root->NE->caminho,root->NO->caminho,root->SO->caminho,root->SE->caminho);
 	// fclose(fp);
 
 	// /* Função que deleta árvore */

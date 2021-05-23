@@ -52,5 +52,6 @@ void delete_tree(NodeTree *node);
 void add_tree(NodeTree *node, Point p);
 void find_point(NodeTree *node, Point p);
 void print_tree(NodeTree *root);
+void print_list(NodeTree *root);
 void find_points_in_circle(NodeTree *node, Point p, double r);
 #endif

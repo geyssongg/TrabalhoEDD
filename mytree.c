@@ -54,12 +54,11 @@ void criaFilhoNE (NodeTree *node){
     //Pegando o caminho do elemento pai e adicionando ao elemento filho
     char aux[20];
 
-    if(strcmp(node->caminho, "0") != 0){
+    
         strcpy(aux,node->caminho);
-    }
+    
     strcat(aux,"00");
     strcpy(node->NE->caminho, aux);
-
 
 }
 
@@ -81,14 +80,9 @@ void criaFilhoNO (NodeTree *node){
 
    //Pegando o caminho do elemento pai e adicionando ao elemento filho
     char aux[20];
-    if(strcmp(node->caminho, "0") != 0){
         strcpy(aux,node->caminho);
-    }
     strcat(aux,"01");
     strcpy(node->NO->caminho, aux);
-
-
-
 
 }
 
@@ -110,9 +104,8 @@ void criaFilhoSO (NodeTree *node){
 
     //Pegando o caminho do elemento pai e adicionando ao elemento filho
     char aux[20];
-    if(strcmp(node->caminho, "0") != 0){
         strcpy(aux,node->caminho);
-    }
+    
     strcat(aux,"10");
     strcpy(node->SO->caminho, aux);
 
@@ -139,9 +132,7 @@ void criaFilhoSE (NodeTree *node){
 
     //Pegando o caminho do elemento pai e adicionando ao elemento filho
     char aux[20];
-    if(strcmp(node->caminho, "0") != 0){
         strcpy(aux,node->caminho);
-    }
     strcat(aux,"11");
     strcpy(node->SE->caminho, aux);
 
@@ -154,8 +145,8 @@ void quebraNo (NodeTree *node){
     node->lista->headList->tamanho = -1; 
     criaFilhoNE(node);
     criaFilhoNO(node);
-    criaFilhoSE(node);
     criaFilhoSO(node);
+    criaFilhoSE(node);
 
 }
 
@@ -295,7 +286,7 @@ void add_tree(NodeTree *node, Point p) {
                 break;
         }
     }
-    else if (node->lista->headList->tamanho >= 0 && node->lista->headList->tamanho < 5){
+    else if (node->lista->headList->tamanho >= 0 && node->lista->headList->tamanho <= 5){
 
         if(node->lista->headList->tamanho == 4){
             quebraNo(node);
@@ -310,20 +301,7 @@ void add_tree(NodeTree *node, Point p) {
     
 }
 
-//**Essa função percorre a arvore quartenária*/ /*
-/*
-void percorrerArvore(NodeTree *node){
-    if(node->lista->tamanho == -1){
-        percorrerArvore(node->NE);
-        percorrerArvore(node->NO);
-        percorrerArvore(node->SO);
-        percorrerArvore(node->SE);
-    }
-    else {
-        //Aqui vai o código de percorrer a lista
-        //printList(node);
-    }
-}*/
+
 
 //Essa função percorre toda a arvore de forma recursiva e coloca todos os elementos em uma única lista encadeada
 void preencheListaArvore(NodeTree *node, NodeList *list){
@@ -402,8 +380,31 @@ void find_points_in_circle(NodeTree *node,Point p, double r){
             printf("(%.2lf,  %.2lf): %.2lf\n", aux->p.x,aux->p.y,distance(p,aux->p));
         }
     }
+    delete_list(lista);
 } 
 
+/*Função que imprime os pontos de uma lista */
+void print_list_enc(NodeList *list){
+    NodeList *aux;
+
+    for (aux = list->headList->primeiro; aux != NULL ; aux = aux->next){
+        printf("(%.2lf, %.2lf): %s \n", aux->p.x,aux->p.y, aux->caminho);
+    }
+}
+
+/*Função que percorre a arvore e imprime todos os pontos */ 
+void print_tree(NodeTree *node){
+    NodeList* lista =  malloc(sizeof(NodeList));
+    lista->headList = malloc(sizeof(HeadList));
+    lista->headList->primeiro = NULL;
+    lista->headList->tamanho = 0;
+    preencheListaArvore(node,lista);
+    print_list_enc(lista);
+}
+
+
+
+/* Função que imprime os pontos de um nó*/
 void print_list(NodeTree *node){
     NodeList *aux;
 
@@ -411,6 +412,6 @@ void print_list(NodeTree *node){
     
     for (aux = node->lista->headList->primeiro; aux != NULL; aux = aux->next){
         
-		printf("%.2lf    %.2lf \n", aux->p.x, aux->p.y);
+		printf("%.2lf    %.2lf  %s \n", aux->p.x, aux->p.y, node->caminho);
     }
 }

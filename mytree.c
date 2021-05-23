@@ -163,17 +163,7 @@ void delete_list (NodeList *list){
     list->headList->primeiro = NULL;
 }
 
-/* Essa função deleta uma lista encadeada recebendo uma cabeça de lista como parametro*/
-void delList (HeadList *cabeca){
-    NodeList *temp;
-    NodeList *cur = cabeca->primeiro;
 
-    while(cur!=NULL){
-        temp = cur;
-        cur = cur->next;
-        free(temp);
-    }
-}
 /*Essa funcao retorna em um inteiro qual o quadrante que o ponto pertence 
     1 = pertence ao quadrante NE
     2 = pertence ao quadrante NO
@@ -402,8 +392,6 @@ void print_tree(NodeTree *node){
     print_list_enc(lista);
 }
 
-
-
 /* Função que imprime os pontos de um nó*/
 void print_list(NodeTree *node){
     NodeList *aux;
@@ -415,3 +403,18 @@ void print_list(NodeTree *node){
 		printf("%.2lf    %.2lf  %s \n", aux->p.x, aux->p.y, node->caminho);
     }
 }
+
+/* Função que deleta a arvore, seus nos e suas listas*/
+void delete_tree (NodeTree *raiz){
+    if (raiz->NE != NULL){
+        delete_tree(raiz->NE);
+        delete_tree(raiz->NO);
+        delete_tree(raiz->SO);
+        delete_tree(raiz->SE);
+    }
+    else if (raiz->NE == NULL){
+        delete_list(raiz->lista);
+        free(raiz);
+        raiz = NULL;
+    }
+} 

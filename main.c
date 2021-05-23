@@ -17,6 +17,7 @@
 #include "mytree.h"
 
 int main(int argc, char **argv) {
+	
 	if(argc != 2) {
 		fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
 		exit(-1);
@@ -73,15 +74,13 @@ int main(int argc, char **argv) {
 	printf("--\n");
 	// /* Função que imprime todos os pontos da árvore */
 	print_tree(root);/*
-	print_list(root->NE);
-	print_list(root->NO);
-	print_list(root->SO);
-	print_list(root->SE);*/
-	//printf("Cam NE %s    Cam NO %s     Cam SO %s  Cam Se %s", root->NE->caminho,root->NO->caminho,root->SO->caminho,root->SE->caminho);
 	// fclose(fp);
 
 	// /* Função que deleta árvore */
-	// delete_tree(root);
-
+	delete_tree(root);
+	if(root){
+		printf("Ainda n excluiu");
+	}
+	
 	return 0;
 }
